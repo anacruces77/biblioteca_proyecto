@@ -14,6 +14,7 @@ public class Biblioteca {
 
     // Estado de lectura del libro
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EstadoLibro estado;
 
     // Relación con Usuario (N:1) (propietario)
