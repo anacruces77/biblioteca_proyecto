@@ -1,5 +1,6 @@
 package com.example.biblioteca.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class Autor {
 
     // Relación 1:N con Libro (lado inverso)
     @OneToMany( mappedBy = "autor", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Libro> libros;
 
 }

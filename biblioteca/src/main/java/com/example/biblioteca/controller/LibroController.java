@@ -2,7 +2,10 @@ package com.example.biblioteca.controller;
 
 
 import com.example.biblioteca.Services.LibroService;
+import com.example.biblioteca.dto.LibroDTO;
+import com.example.biblioteca.entity.Autor;
 import com.example.biblioteca.entity.Libro;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +40,16 @@ public class LibroController {
 
     // POST /api/libros → crear libro
     @PostMapping
-    public ResponseEntity<Libro> createLibro(@RequestBody Libro libro) {
+    public ResponseEntity<Libro> createLibro(@Valid @RequestBody LibroDTO dto) {
+
+        Autor autor = libroService.getAutorById(dto.getAutorId());
+
+        Libro libro = new Libro();
+        libro.setTitulo(dto.getTitulo());
+        libro.setIsbn(dto.getIsbn());
+        libro.setAnioPublicacion(dto.getAnioPublicacion());
+        libro.setAutor(autor);
+
         Libro saved = libroService.saveLibro(libro);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }

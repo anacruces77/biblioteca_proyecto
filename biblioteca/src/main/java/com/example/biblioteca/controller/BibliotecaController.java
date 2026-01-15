@@ -1,16 +1,20 @@
 package com.example.biblioteca.controller;
 
 import com.example.biblioteca.Services.BibliotecaService;
+import com.example.biblioteca.dto.BibliotecaDTO;
+import com.example.biblioteca.dto.BibliotecaResponseDTO;
 import com.example.biblioteca.entity.Biblioteca;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/biblioteca")
+@RequestMapping("/api/bibliotecas")
 public class BibliotecaController {
 
     private final BibliotecaService bibliotecaService;
@@ -35,10 +39,19 @@ public class BibliotecaController {
 
     // POST /api/biblioteca → añadir libro a biblioteca
     @PostMapping
-    public ResponseEntity<Biblioteca> createBiblioteca(@RequestBody Biblioteca biblioteca) {
-        Biblioteca saved = bibliotecaService.saveBiblioteca(biblioteca);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+    public ResponseEntity<BibliotecaResponseDTO> createBiblioteca(
+            @Valid @RequestBody BibliotecaDTO dto) {
+
+        Biblioteca saved = bibliotecaService.saveFromDTO(dto);
+        BibliotecaResponseDTO response = bibliotecaService.toResponseDTO(saved);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+
+
+
+
 
     // DELETE /api/biblioteca/{id}
     @DeleteMapping("/{id}")

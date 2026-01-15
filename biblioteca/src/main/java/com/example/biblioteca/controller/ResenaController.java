@@ -2,6 +2,7 @@ package com.example.biblioteca.controller;
 
 
 import com.example.biblioteca.Services.ResenaService;
+import com.example.biblioteca.dto.ResenaDTO;
 import com.example.biblioteca.entity.Resena;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +38,10 @@ public class ResenaController {
 
     // POST /api/resenas → crear reseña
     @PostMapping
-    public ResponseEntity<Resena> createResena(@RequestBody Resena resena) {
-        Resena saved = resenaService.saveResena(resena);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+    public ResponseEntity<String> createResena(@jakarta.validation.Valid @RequestBody ResenaDTO resenaDTO) {
+        resenaService.saveResenaDesdeDTO(resenaDTO);
+        // Al devolver un String, Spring no intenta procesar las relaciones Usuario/Libro
+        return new ResponseEntity<>("¡Éxito! Reseña guardada correctamente en la base de datos", HttpStatus.CREATED);
     }
 
     // DELETE /api/resenas/{id}

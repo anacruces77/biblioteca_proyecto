@@ -10,8 +10,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable() // Desactiva CSRF para poder probar POST desde Bruno
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); // permite todas las rutas
+        http
+                // Nueva sintaxis para desactivar CSRF
+                .csrf(csrf -> csrf.disable())
+
+                // Nueva sintaxis para autorizar peticiones
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                )
+
+                // ESTO ES LO QUE ARREGLA EL ACCESO A H2-CONSOLE
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin())
+                );
+
         return http.build();
     }
 }
