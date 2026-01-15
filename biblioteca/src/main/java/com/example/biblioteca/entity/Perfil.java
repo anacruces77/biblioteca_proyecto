@@ -1,5 +1,6 @@
 package com.example.biblioteca.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class Perfil {
     // Relación 1:1 con Usuario (propietario)
     @OneToOne
     @JoinColumn( name = "usuario_id", nullable = false, unique = true)
+    @JsonBackReference
     private Usuario usuario;
 
 

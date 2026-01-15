@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+//JpaRepository incluye automáticamente métodos básicos como sa(ve(), delete(), findAll(), findById(), delete)
 public interface BibliotecaRepository extends JpaRepository<Biblioteca, Long> {
 
     // Todos los libros de un usuario
