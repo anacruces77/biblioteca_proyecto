@@ -1,6 +1,7 @@
 package com.example.biblioteca.controller;
 
 import com.example.biblioteca.Services.PerfilService;
+import com.example.biblioteca.dto.PerfilDTO;
 import com.example.biblioteca.entity.Perfil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -39,8 +40,8 @@ public class PerfilController {
 
     // POST /api/perfiles → crear perfil
     @PostMapping
-    public ResponseEntity<Perfil> createPerfil(@Valid @RequestBody Perfil perfil) {
-        Perfil saved = perfilService.savePerfil(perfil);
+    public ResponseEntity<Perfil> createPerfil(@Valid @RequestBody PerfilDTO dto) { // Recibe DTO
+        Perfil saved = perfilService.saveFromDTO(dto);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 

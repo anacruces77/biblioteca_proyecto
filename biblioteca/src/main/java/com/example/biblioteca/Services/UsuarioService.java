@@ -1,6 +1,7 @@
 package com.example.biblioteca.Services;
 
 import com.example.biblioteca.entity.Usuario;
+import com.example.biblioteca.dto.UsuarioDTO;
 import com.example.biblioteca.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,15 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
+    // Me sirve para realizar el test
+    public Usuario saveFromDTO(UsuarioDTO dto) {
+        Usuario usuario = new Usuario();
+        usuario.setNombre(dto.getNombre());
+        usuario.setEmail(dto.getEmail());
+        usuario.setPassword(dto.getPassword()); // ¡Ojo! En un proyecto real aquí se cifraría
+
+        // Suponiendo que usas un repositorio llamado usuarioRepository
+        return usuarioRepository.save(usuario);
+    }
 
 }

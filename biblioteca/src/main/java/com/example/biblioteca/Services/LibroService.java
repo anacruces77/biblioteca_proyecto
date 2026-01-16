@@ -1,6 +1,7 @@
 package com.example.biblioteca.Services;
 
 
+import com.example.biblioteca.dto.LibroDTO;
 import com.example.biblioteca.entity.Autor;
 import com.example.biblioteca.entity.Libro;
 import com.example.biblioteca.repository.AutorRepository;
@@ -55,5 +56,14 @@ public class LibroService {
     }
 
 
+    // Metodo para hacer el test
+    public Libro saveFromDTO(LibroDTO dto) {
+        Libro libro = new Libro();
+        libro.setTitulo(dto.getTitulo());
+        libro.setIsbn(dto.getIsbn());
+        libro.setAnioPublicacion(dto.getAnioPublicacion());
+        // Aquí iría la lógica para buscar el autor por ID y asignarlo
+        return libroRepository.save(libro);
+    }
 
 }

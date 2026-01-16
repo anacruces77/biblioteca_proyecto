@@ -4,6 +4,7 @@ import com.example.biblioteca.Services.AutorService;
 import com.example.biblioteca.Services.LibroService;
 import com.example.biblioteca.Services.ResenaService;
 import com.example.biblioteca.Services.UsuarioService;
+import com.example.biblioteca.dto.AutorDTO;
 import com.example.biblioteca.dto.ResenaDTO;
 import com.example.biblioteca.entity.Autor;
 import com.example.biblioteca.entity.Libro;
@@ -23,19 +24,12 @@ import java.util.Optional;
 public class AutorController {
 
     private final AutorService autorService;
-    private final UsuarioService usuarioService;
-    private final LibroService libroService;
-    private final ResenaService resenaService;
+
 
     // Inyectamos el service
-    public AutorController(AutorService autorService,
-                           UsuarioService usuarioService,
-                           LibroService libroService,
-                           ResenaService resenaService) {
+    public AutorController(AutorService autorService) {
         this.autorService = autorService;
-        this.usuarioService = usuarioService;
-        this.libroService = libroService;
-        this.resenaService = resenaService;
+
     }
 
     // GET /api/autores → listar autores
@@ -54,28 +48,14 @@ public class AutorController {
 
     // POST /api/autores → crear autor
     @PostMapping
-    public ResponseEntity<?> createResena(
-            @Valid @RequestBody ResenaDTO resenaDTO,
-            BindingResult result) {
+    public ResponseEntity<Autor> createAutor(
+            @Valid @RequestBody AutorDTO dto) {
 
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
-        }
+        Autor autor = new Autor();
+        autor.setNombre(dto.getNombre());
 
-        Usuario usuario = usuarioService.getUsuarioById(resenaDTO.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        Libro libro = libroService.getLibroById(resenaDTO.getLibroId())
-                .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
-
-        Resena resena = new Resena();
-        resena.setPuntuacion(resenaDTO.getPuntuacion());
-        resena.setComentario(resenaDTO.getComentario());
-        resena.setUsuario(usuario);
-        resena.setLibro(libro);
-
-        Resena saved = resenaService.saveResena(resena);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+        Autor saved = autorService.saveAutor(autor);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
 

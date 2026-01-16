@@ -41,5 +41,20 @@ public class LibroDTO {
         return autorId;
     }
 
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public void setAnioPublicacion(Integer anioPublicacion) {
+        this.anioPublicacion = anioPublicacion;
+    }
+
+    public void setAutorId(Long autorId) {
+        this.autorId = autorId;
+    }
 
 }
