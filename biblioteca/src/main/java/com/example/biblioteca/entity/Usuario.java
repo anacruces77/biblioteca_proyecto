@@ -41,6 +41,16 @@ public class Usuario {
     @Column(nullable = false)
     private String password;
 
+
+
+    // Rol para seguridad
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Rol rol;
+
+
+
+
     // Relación 1:1 con Perfil (lado inverso)
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference

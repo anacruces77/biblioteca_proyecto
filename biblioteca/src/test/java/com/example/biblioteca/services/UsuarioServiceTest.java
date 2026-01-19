@@ -1,6 +1,7 @@
 package com.example.biblioteca.services;
 
 import com.example.biblioteca.Services.UsuarioService;
+import com.example.biblioteca.entity.Rol;
 import com.example.biblioteca.entity.Usuario;
 import com.example.biblioteca.repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,16 +28,18 @@ class UsuarioServiceTest {
 
     @Test
     void saveUsuario_conDatosValidos_devuelveUsuario() {
-        Usuario usuario = new Usuario();
+        Usuario usuario = new Usuario(); // Usuario que quiero guardar, sin ID aun
         usuario.setNombre("Ana");
         usuario.setEmail("ana@mail.com");
         usuario.setPassword("123456");
+        usuario.setRol(Rol.ROLE_USER);
 
         Usuario usuarioGuardado = new Usuario();
-        usuarioGuardado.setId(1L);
+        usuarioGuardado.setId(1L);  // Simula haber pasado por la base de datos
         usuarioGuardado.setNombre("Ana");
         usuarioGuardado.setEmail("ana@mail.com");
         usuarioGuardado.setPassword("123456");
+        usuario.setRol(Rol.ROLE_USER);
 
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioGuardado);
 

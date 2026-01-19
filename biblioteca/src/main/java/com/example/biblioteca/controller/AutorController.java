@@ -13,6 +13,7 @@ import com.example.biblioteca.entity.Usuario;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,13 +34,16 @@ public class AutorController {
     }
 
     // GET /api/autores → listar autores
+    // Solo admins pueden listar todos los autores
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<Autor> getAllAutores() {
         return autorService.getAllAutores();
     }
 
     // GET /api/autores/{id} → autor por id
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Autor> getAutorById(@PathVariable Long id) {
         Optional<Autor> autor = autorService.getAutorById(id);
         return autor.map(ResponseEntity::ok)
@@ -47,7 +51,9 @@ public class AutorController {
     }
 
     // POST /api/autores → crear autor
+    // Solo admins pueden crear autores
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Autor> createAutor(
             @Valid @RequestBody AutorDTO dto) {
 
@@ -60,7 +66,9 @@ public class AutorController {
 
 
     // DELETE /api/autores/{id} → eliminar autor
+    // Solo admins pueden eliminar
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteAutor(@PathVariable Long id) {
         autorService.deleteAutor(id);
         return ResponseEntity.noContent().build();

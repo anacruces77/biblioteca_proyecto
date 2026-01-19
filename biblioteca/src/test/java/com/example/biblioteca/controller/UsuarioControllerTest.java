@@ -2,6 +2,7 @@ package com.example.biblioteca.controller;
 
 import com.example.biblioteca.Services.UsuarioService;
 import com.example.biblioteca.dto.UsuarioDTO;
+import com.example.biblioteca.entity.Rol;
 import com.example.biblioteca.entity.Usuario;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,7 @@ public class UsuarioControllerTest {
         usuario.setId(1L);
         usuario.setNombre("Ana");
         usuario.setEmail("ana@mail.com");
+        usuario.setRol(Rol.ROLE_USER);
 
         when(usuarioService.getUsuarioById(1L)).thenReturn(Optional.of(usuario));
 

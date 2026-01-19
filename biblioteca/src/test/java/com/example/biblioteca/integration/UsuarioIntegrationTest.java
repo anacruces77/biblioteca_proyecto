@@ -1,6 +1,7 @@
 package com.example.biblioteca.integration;
 
 import com.example.biblioteca.controller.UsuarioController;
+import com.example.biblioteca.entity.Rol;
 import com.example.biblioteca.entity.Usuario;
 import com.example.biblioteca.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,13 +34,15 @@ public class UsuarioIntegrationTest {
         usuario.setNombre("TestUser");
         usuario.setEmail("testuser@mail.com");
         usuario.setPassword("123456");
+        usuario.setRol(Rol.ROLE_USER);
 
         mockMvc.perform(post("/api/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(usuario)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nombre").value("TestUser"))
-                .andExpect(jsonPath("$.email").value("testuser@mail.com"));
+                .andExpect(jsonPath("$.email").value("testuser@mail.com"))
+                .andExpect(jsonPath("$.rol").value("ROLE_USER"));
     }
 
     @Test

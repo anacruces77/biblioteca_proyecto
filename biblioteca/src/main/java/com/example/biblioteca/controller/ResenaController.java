@@ -6,6 +6,7 @@ import com.example.biblioteca.dto.ResenaDTO;
 import com.example.biblioteca.entity.Resena;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,13 +24,16 @@ public class ResenaController {
     }
 
     // GET /api/resenas → listar reseñas
+    // Usuarios pueden ver todas las reseñas
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public List<Resena> getAllResenas() {
         return resenaService.getAllResenas();
     }
 
     // GET /api/resenas/{id}
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public ResponseEntity<Resena> getResenaById(@PathVariable Long id) {
         Optional<Resena> resena = resenaService.getResenaById(id);
         return resena.map(ResponseEntity::ok)
@@ -38,6 +42,7 @@ public class ResenaController {
 
     // POST /api/resenas → crear reseña
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> createResena(@jakarta.validation.Valid @RequestBody ResenaDTO resenaDTO) {
         resenaService.saveResenaDesdeDTO(resenaDTO);
         // Al devolver un String, Spring no intenta procesar las relaciones Usuario/Libro
@@ -45,7 +50,9 @@ public class ResenaController {
     }
 
     // DELETE /api/resenas/{id}
+    // Solo admins pueden eliminar reseñas
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteResena(@PathVariable Long id) {
         resenaService.deleteResena(id);
         return ResponseEntity.noContent().build();

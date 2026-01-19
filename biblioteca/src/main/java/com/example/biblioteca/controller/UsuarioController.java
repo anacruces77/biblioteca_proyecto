@@ -4,10 +4,12 @@ import com.example.biblioteca.Services.UsuarioService;
 import com.example.biblioteca.dto.PerfilDTO;
 import com.example.biblioteca.dto.UsuarioDTO;
 import com.example.biblioteca.entity.Perfil;
+import com.example.biblioteca.entity.Rol;
 import com.example.biblioteca.entity.Usuario;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,18 +27,20 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
+    // Solo admins pueden ver todos los usuarios
     // GET /api/usuarios → todos los usuarios
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<Usuario> getAllUsuarios() {
         return usuarioService.getAllUsuarios();
     }
 
+    // Cualquier usuario logueado puede ver su propio perfil
     // GET /api/usuarios/{id} → usuario por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> getUsuarioById(@PathVariable Long id) {
-        Optional<Usuario> usuario = usuarioService.getUsuarioById(id);
-        return usuario.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    public Usuario getUsuarioById(@PathVariable Long id) {
+        return usuarioService.getUsuarioByIdOrThrow(id);
     }
 
     // Usando DTO
@@ -52,6 +56,7 @@ public class UsuarioController {
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setEmail(usuarioDTO.getEmail());
         usuario.setPassword(usuarioDTO.getPassword());
+        usuario.setRol(Rol.ROLE_USER); //Rol por defecto
 
         if(usuarioDTO.getPerfil() != null){
             PerfilDTO perfilDTO = usuarioDTO.getPerfil();
@@ -81,8 +86,12 @@ public class UsuarioController {
         return ResponseEntity.notFound().build();
     }
 
+
+
+    // Solo admins pueden eliminar usuarios
     // DELETE /api/usuarios/{id} → eliminar usuario
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) {
         usuarioService.deleteUsuario(id);
         return ResponseEntity.noContent().build();

@@ -6,9 +6,9 @@ INSERT INTO autores (nombre) VALUES ('George R.R. Martin');
 INSERT INTO autores (nombre) VALUES ('Isaac Asimov');
 
 -- 2. USUARIOS
-INSERT INTO usuarios (nombre, email, password) VALUES ('Ana', 'ana@mail.com', '123456');
-INSERT INTO usuarios (nombre, email, password) VALUES ('Carlos', 'carlos@mail.com', '123456');
-INSERT INTO usuarios (nombre, email, password) VALUES ('Laura', 'laura@mail.com', '123456');
+INSERT INTO usuarios (nombre, email, password, rol) VALUES ('Ana', 'ana@mail.com', '123456', 'ROLE_ADMIN');
+INSERT INTO usuarios (nombre, email, password, rol) VALUES ('Carlos', 'carlos@mail.com', '123456', 'ROLE_USER');
+INSERT INTO usuarios (nombre, email, password, rol) VALUES ('Laura', 'laura@mail.com', '123456', 'ROLE_USER');
 
 -- 3. PERFILES (usuario_id 1=Ana, 2=Carlos, 3=Laura)
 INSERT INTO perfiles (nickname, avatar, usuario_id) VALUES ('AnaCool', 'ana.png', 1);
