@@ -1,5 +1,6 @@
 package com.example.biblioteca.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,18 +35,25 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
 
-                        // 2. REGLAS POR ROL (Esto es lo que te falta)
-                        // Solo los ADMIN pueden hacer POST, PUT y DELETE en usuarios
+                        // 2. REGLAS POR ROL
+                        // Nota: Si usas @PreAuthorize en los controladores,
+                        // estas líneas aquí son opcionales pero refuerzan la seguridad.
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/usuarios/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/usuarios/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
 
-                        // 3. Todo lo demás requiere estar logueado (como ver la lista de usuarios)
+                        // 3. Todo lo demás requiere estar logueado
                         .anyRequest().authenticated()
                 )
-                // Manejo de la consola de H2
+                // --- ESTO ES LO QUE DEBES AÑADIR ---
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            // Cuando no hay token o la autenticación falla, devolvemos 401
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: No autorizado");
+                        })
+                )
+                // ----------------------------------
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
-                // FILTRO JWT: Solo añadirlo UNA VEZ
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

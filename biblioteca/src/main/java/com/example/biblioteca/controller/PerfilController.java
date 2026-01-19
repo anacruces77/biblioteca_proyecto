@@ -28,7 +28,7 @@ public class PerfilController {
     // GET /api/perfiles → listar todos los perfiles
     // Ver perfiles → admins
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Perfil> getAllPerfiles() {
         return perfilService.getAllPerfiles();
     }
@@ -36,7 +36,7 @@ public class PerfilController {
     // GET /api/perfiles/{id} → perfil por id
     // Ver perfil por id → admin o dueño del perfil
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     public ResponseEntity<Perfil> getPerfilById(@PathVariable Long id) {
         Optional<Perfil> perfil = perfilService.getPerfilById(id);
         return perfil.map(ResponseEntity::ok)
@@ -46,7 +46,7 @@ public class PerfilController {
     // POST /api/perfiles → crear perfil
     // Crear perfil → cualquier usuario logueado
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<Perfil> createPerfil(@Valid @RequestBody PerfilDTO dto) { // Recibe DTO
         Perfil saved = perfilService.saveFromDTO(dto);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
@@ -55,7 +55,7 @@ public class PerfilController {
     // PUT /api/perfiles/{id} → actualizar perfil
     // Actualizar perfil → admin o dueño
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     public ResponseEntity<Perfil> updatePerfil(@PathVariable Long id,
                                                @Valid @RequestBody Perfil perfil) {
         Optional<Perfil> existing = perfilService.getPerfilById(id);
@@ -70,7 +70,7 @@ public class PerfilController {
     // DELETE /api/perfiles/{id} → eliminar perfil
     // Eliminar perfil → solo admins
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletePerfil(@PathVariable Long id) {
         perfilService.deletePerfil(id);
         return ResponseEntity.noContent().build();

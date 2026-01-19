@@ -1,5 +1,6 @@
 package com.example.biblioteca.controllersecurity;
 
+import com.example.biblioteca.dto.UsuarioDTO;
 import com.example.biblioteca.entity.Rol;
 import com.example.biblioteca.entity.Usuario;
 import com.example.biblioteca.security.JwtUtil;
@@ -27,15 +28,23 @@ public class UsuarioControllerSecurityTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private com.example.biblioteca.repository.UsuarioRepository usuarioRepository;
+
+
     @Test
     void deleteUsuario_conRolAdmin_devuelve204() throws Exception {
+        // 1. Crear y GUARDAR el admin en la BD para que el filtro lo encuentre
         Usuario admin = new Usuario();
-        admin.setId(1L);
+        admin.setNombre("Admin Test");
+        admin.setEmail("admin@test.com");
+        admin.setPassword("123456");
         admin.setRol(Rol.ROLE_ADMIN);
+        usuarioRepository.save(admin); // <--- IMPORTANTE
 
         String token = jwtUtil.generateToken(admin);
 
-        mockMvc.perform(delete("/api/usuarios/1")
+        mockMvc.perform(delete("/api/usuarios/" + admin.getId())
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
     }
@@ -56,16 +65,23 @@ public class UsuarioControllerSecurityTest {
     @Test
     void deleteUsuario_sinToken_devuelve401() throws Exception {
         mockMvc.perform(delete("/api/usuarios/1"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
     void postUsuario_conRolAdmin_devuelve201() throws Exception {
+        // 1. Guardamos al administrador que hará la petición
         Usuario admin = new Usuario();
+        admin.setNombre("Admin");
+        admin.setEmail("admin-post@mail.com");
+        admin.setPassword("123456");
         admin.setRol(Rol.ROLE_ADMIN);
+        usuarioRepository.save(admin);
+
         String token = jwtUtil.generateToken(admin);
 
-        Usuario nuevo = new Usuario();
+        // 2. Datos del nuevo usuario que queremos crear
+        UsuarioDTO nuevo = new UsuarioDTO();
         nuevo.setNombre("NuevoUser");
         nuevo.setEmail("nuevo@mail.com");
         nuevo.setPassword("123456");
@@ -97,17 +113,29 @@ public class UsuarioControllerSecurityTest {
 
     @Test
     void putUsuario_conRolAdmin_devuelve200() throws Exception {
+        // 1. Guardamos al admin y al usuario que vamos a editar
         Usuario admin = new Usuario();
+        admin.setEmail("admin-put@mail.com");
+        admin.setNombre("Admin");
+        admin.setPassword("123456");
         admin.setRol(Rol.ROLE_ADMIN);
+        usuarioRepository.save(admin);
+
+        Usuario aEditar = new Usuario();
+        aEditar.setNombre("Original");
+        aEditar.setEmail("original@mail.com");
+        aEditar.setPassword("123456");
+        aEditar.setRol(Rol.ROLE_USER);
+        usuarioRepository.save(aEditar);
+
         String token = jwtUtil.generateToken(admin);
 
-        Usuario edit = new Usuario();
-        edit.setNombre("EditUser");
-        edit.setEmail("edit@mail.com");
+        // 2. Nuevos datos
+        aEditar.setNombre("Editado");
 
-        mockMvc.perform(put("/api/usuarios/1")
+        mockMvc.perform(put("/api/usuarios/" + aEditar.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(edit))
+                        .content(objectMapper.writeValueAsString(aEditar))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }

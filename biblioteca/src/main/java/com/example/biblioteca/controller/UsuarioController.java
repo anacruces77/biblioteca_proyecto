@@ -30,7 +30,7 @@ public class UsuarioController {
     // Solo admins pueden ver todos los usuarios
     // GET /api/usuarios → todos los usuarios
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Usuario> getAllUsuarios() {
         return usuarioService.getAllUsuarios();
     }
@@ -38,7 +38,7 @@ public class UsuarioController {
     // Cualquier usuario logueado puede ver su propio perfil
     // GET /api/usuarios/{id} → usuario por ID
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     public Usuario getUsuarioById(@PathVariable Long id) {
         return usuarioService.getUsuarioByIdOrThrow(id);
     }
@@ -91,7 +91,7 @@ public class UsuarioController {
     // Solo admins pueden eliminar usuarios
     // DELETE /api/usuarios/{id} → eliminar usuario
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) {
         usuarioService.deleteUsuario(id);
         return ResponseEntity.noContent().build();

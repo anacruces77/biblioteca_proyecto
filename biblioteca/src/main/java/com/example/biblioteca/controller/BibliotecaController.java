@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,12 +26,14 @@ public class BibliotecaController {
 
     // GET /api/biblioteca → listar biblioteca
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<Biblioteca> getAllBiblioteca() {
         return bibliotecaService.getAllBibliotecas();
     }
 
     // GET /api/biblioteca/{id}
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Biblioteca> getBibliotecaById(@PathVariable Long id) {
         Optional<Biblioteca> biblioteca = bibliotecaService.getBibliotecaById(id);
         return biblioteca.map(ResponseEntity::ok)
@@ -39,6 +42,7 @@ public class BibliotecaController {
 
     // POST /api/biblioteca → añadir libro a biblioteca
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BibliotecaResponseDTO> createBiblioteca(
             @Valid @RequestBody BibliotecaDTO dto) {
 
@@ -55,6 +59,7 @@ public class BibliotecaController {
 
     // DELETE /api/biblioteca/{id}
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBiblioteca(@PathVariable Long id) {
         bibliotecaService.deleteBiblioteca(id);
         return ResponseEntity.noContent().build();

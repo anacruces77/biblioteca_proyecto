@@ -36,14 +36,14 @@ public class AutorController {
     // GET /api/autores → listar autores
     // Solo admins pueden listar todos los autores
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Autor> getAllAutores() {
         return autorService.getAllAutores();
     }
 
     // GET /api/autores/{id} → autor por id
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Autor> getAutorById(@PathVariable Long id) {
         Optional<Autor> autor = autorService.getAutorById(id);
         return autor.map(ResponseEntity::ok)
@@ -53,7 +53,7 @@ public class AutorController {
     // POST /api/autores → crear autor
     // Solo admins pueden crear autores
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Autor> createAutor(
             @Valid @RequestBody AutorDTO dto) {
 
@@ -68,7 +68,7 @@ public class AutorController {
     // DELETE /api/autores/{id} → eliminar autor
     // Solo admins pueden eliminar
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAutor(@PathVariable Long id) {
         autorService.deleteAutor(id);
         return ResponseEntity.noContent().build();

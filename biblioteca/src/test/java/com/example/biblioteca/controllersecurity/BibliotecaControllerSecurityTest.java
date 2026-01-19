@@ -19,46 +19,62 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class BibliotecaControllerSecurityTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private JwtUtil jwtUtil;
+    @Autowired private ObjectMapper objectMapper;
+    @Autowired private com.example.biblioteca.repository.UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    @org.junit.jupiter.api.BeforeEach
+    void setup() {
+        usuarioRepository.deleteAll(); // Limpia la tabla para que no haya correos repetidos
+    }
 
     @Test
     void postBiblioteca_conRolAdmin_devuelve201() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_ADMIN));
+        com.example.biblioteca.entity.Usuario admin = saveUserInDB(Rol.ROLE_ADMIN, "admin_post@test.com");
+        String token = jwtUtil.generateToken(admin);
 
-        Biblioteca b = new Biblioteca();
-        b.setUsuario(null); // simplificado
+        com.example.biblioteca.dto.BibliotecaDTO dto = new com.example.biblioteca.dto.BibliotecaDTO();
+        dto.setUsuarioId(admin.getId());
+        dto.setLibroId(1L);
+        // Usa el nombre exacto de tu Enum (por ejemplo, EstadoLibro.LEYENDO)
+        dto.setEstado(com.example.biblioteca.entity.EstadoLibro.LEYENDO);
 
         mockMvc.perform(post("/api/bibliotecas")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(b))
+                        .content(objectMapper.writeValueAsString(dto))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isCreated());
     }
 
     @Test
     void postBiblioteca_conRolUser_devuelve403() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_USER));
+        // 1. Guardamos el usuario con rol USER
+        com.example.biblioteca.entity.Usuario user = saveUserInDB(Rol.ROLE_USER, "user_post@test.com");
+        String token = jwtUtil.generateToken(user);
 
-        Biblioteca b = new Biblioteca();
-        b.setUsuario(null);
+        // 2. Creamos el DTO con DATOS VÁLIDOS (incluyendo el Enum)
+        com.example.biblioteca.dto.BibliotecaDTO dto = new com.example.biblioteca.dto.BibliotecaDTO();
+        dto.setUsuarioId(user.getId());
+        dto.setLibroId(1L);
+        // IMPORTANTE: Debes poner el estado para que no de error 400
+        dto.setEstado(com.example.biblioteca.entity.EstadoLibro.LEYENDO);
 
+        // 3. Realizamos la petición
         mockMvc.perform(post("/api/bibliotecas")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(b))
+                        .content(objectMapper.writeValueAsString(dto))
                         .header("Authorization", "Bearer " + token))
+                // 4. Ahora sí, como los datos son válidos, Spring llegará a comprobar
+                // la seguridad y devolverá 403 porque no es ADMIN.
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void deleteBiblioteca_conRolAdmin_devuelve204() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_ADMIN));
+        com.example.biblioteca.entity.Usuario admin = saveUserInDB(Rol.ROLE_ADMIN, "admin_del@test.com");
+        String token = jwtUtil.generateToken(admin);
+
         mockMvc.perform(delete("/api/bibliotecas/1")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
@@ -66,7 +82,9 @@ public class BibliotecaControllerSecurityTest {
 
     @Test
     void deleteBiblioteca_conRolUser_devuelve403() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_USER));
+        com.example.biblioteca.entity.Usuario user = saveUserInDB(Rol.ROLE_USER, "user_del@test.com");
+        String token = jwtUtil.generateToken(user);
+
         mockMvc.perform(delete("/api/bibliotecas/1")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden());
@@ -78,9 +96,14 @@ public class BibliotecaControllerSecurityTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    private com.example.biblioteca.entity.Usuario createUser(Rol rol) {
+    // ELIMINA EL MÉTODO createUser y usa solo este:
+    private com.example.biblioteca.entity.Usuario saveUserInDB(Rol rol, String email) {
         com.example.biblioteca.entity.Usuario u = new com.example.biblioteca.entity.Usuario();
+        u.setEmail(email);
+        u.setNombre("Test User");
+        u.setPassword("password123");
         u.setRol(rol);
-        return u;
+        return usuarioRepository.save(u);
     }
+
 }

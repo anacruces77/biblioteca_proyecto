@@ -29,48 +29,83 @@ public class PerfilControllerSecurityTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    // Inyecta los repositorios para preparar la BD
+    @Autowired private com.example.biblioteca.repository.UsuarioRepository usuarioRepository;
+    @Autowired private com.example.biblioteca.repository.PerfilRepository perfilRepository;
+
+    private com.example.biblioteca.entity.Usuario saveUser(Rol rol, String email) {
+        com.example.biblioteca.entity.Usuario u = new com.example.biblioteca.entity.Usuario();
+        u.setNombre("Test");
+        u.setEmail(email);
+        u.setPassword("123456");
+        u.setRol(rol);
+        return usuarioRepository.save(u); // PERSISTIR EN BD
+    }
+
     @Test
     void postPerfil_conRolAdmin_devuelve201() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_ADMIN));
+        // 1. Guardar admin y el usuario al que pertenecerá el perfil
+        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ROLE_ADMIN, "admin-p@test.com");
+        com.example.biblioteca.entity.Usuario usuarioParaPerfil = saveUser(Rol.ROLE_USER, "user-p@test.com");
 
-        Perfil p = new Perfil();
-        p.setNickname("NickTest");
+        String token = jwtUtil.generateToken(admin);
+
+        // 2. Crear un DTO válido con el usuarioId
+        com.example.biblioteca.dto.PerfilDTO dto = new com.example.biblioteca.dto.PerfilDTO();
+        dto.setNickname("NickTest");
+        dto.setUsuarioId(usuarioParaPerfil.getId()); // ID real de la BD
 
         mockMvc.perform(post("/api/perfiles")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(p))
+                        .content(objectMapper.writeValueAsString(dto))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isCreated());
     }
 
     @Test
-    void postPerfil_conRolUser_devuelve403() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_USER));
+    void postPerfil_conRolUser_devuelve201() throws Exception {
+        // El usuario existe en la BD
+        com.example.biblioteca.entity.Usuario user = saveUser(Rol.ROLE_USER, "user-crear@test.com");
+        String token = jwtUtil.generateToken(user);
 
-        Perfil p = new Perfil();
-        p.setNickname("NickTest");
+        com.example.biblioteca.dto.PerfilDTO dto = new com.example.biblioteca.dto.PerfilDTO();
+        dto.setNickname("NickUser");
+        dto.setUsuarioId(user.getId());
 
         mockMvc.perform(post("/api/perfiles")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(p))
+                        .content(objectMapper.writeValueAsString(dto))
                         .header("Authorization", "Bearer " + token))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isCreated()); // Ahora esperamos 201 porque TIENE permiso
     }
 
     @Test
     void deletePerfil_conRolAdmin_devuelve204() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_ADMIN));
-        mockMvc.perform(delete("/api/perfiles/1")
+        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ROLE_ADMIN, "admin-del-p@test.com");
+        com.example.biblioteca.entity.Usuario u = saveUser(Rol.ROLE_USER, "u-del@test.com");
+
+        // Creamos un perfil real para borrarlo
+        com.example.biblioteca.entity.Perfil p = new com.example.biblioteca.entity.Perfil();
+        p.setNickname("ABorrar");
+        p.setUsuario(u);
+        p = perfilRepository.save(p);
+
+        String token = jwtUtil.generateToken(admin);
+
+        mockMvc.perform(delete("/api/perfiles/" + p.getId())
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deletePerfil_conRolUser_devuelve403() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_USER));
+        // Usuario autenticado pero sin rol ADMIN
+        com.example.biblioteca.entity.Usuario user = saveUser(Rol.ROLE_USER, "user-no-borrar@test.com");
+        String token = jwtUtil.generateToken(user);
+
         mockMvc.perform(delete("/api/perfiles/1")
                         .header("Authorization", "Bearer " + token))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden()); // Aquí el AccessDeniedHandler enviará el 403 en lugar del 500
     }
 
     @Test

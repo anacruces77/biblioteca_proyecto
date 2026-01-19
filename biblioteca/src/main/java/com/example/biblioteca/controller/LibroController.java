@@ -28,7 +28,7 @@ public class LibroController {
     // GET /api/libros → listar libros
     // Usuarios normales pueden ver libros
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public List<Libro> getAllLibros() {
         return libroService.getAllLibros();
     }
@@ -36,7 +36,7 @@ public class LibroController {
     // GET /api/libros/{id} → libro por id
     // Ver libro por id → cualquier usuario logueado
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<Libro> getLibroById(@PathVariable Long id) {
         Optional<Libro> libro = libroService.getLibroById(id);
         return libro.map(ResponseEntity::ok)
@@ -46,7 +46,7 @@ public class LibroController {
     // POST /api/libros → crear libro
     // Solo admins pueden crear libros
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Libro> createLibro(@Valid @RequestBody LibroDTO dto) {
 
         Autor autor = libroService.getAutorById(dto.getAutorId());
@@ -66,7 +66,7 @@ public class LibroController {
     // DELETE /api/libros/{id} → eliminar libro
     // Solo admins pueden eliminar
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteLibro(@PathVariable Long id) {
         libroService.deleteLibro(id);
         return ResponseEntity.noContent().build();

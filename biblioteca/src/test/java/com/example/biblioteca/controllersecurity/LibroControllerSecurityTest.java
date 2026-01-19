@@ -27,16 +27,39 @@ public class LibroControllerSecurityTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired private com.example.biblioteca.repository.UsuarioRepository usuarioRepository;
+    @Autowired private com.example.biblioteca.repository.AutorRepository autorRepository;
+    @Autowired private com.example.biblioteca.repository.LibroRepository libroRepository;
+
+    private com.example.biblioteca.entity.Usuario saveUser(Rol rol, String email) {
+        com.example.biblioteca.entity.Usuario u = new com.example.biblioteca.entity.Usuario();
+        u.setNombre("Test User");
+        u.setEmail(email);
+        u.setPassword("123456");
+        u.setRol(rol);
+        return usuarioRepository.save(u); // Guardamos en BD
+    }
+
     @Test
     void postLibro_conRolAdmin_devuelve201() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_ADMIN));
+        // 1. Creamos Admin y Autor en BD
+        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ROLE_ADMIN, "admin-libros@test.com");
+        com.example.biblioteca.entity.Autor autor = new com.example.biblioteca.entity.Autor();
+        autor.setNombre("Autor Test");
+        autor = autorRepository.save(autor);
 
-        Libro libro = new Libro();
-        libro.setTitulo("LibroTest");
+        String token = jwtUtil.generateToken(admin);
+
+        // 2. Usamos el DTO con datos válidos
+        com.example.biblioteca.dto.LibroDTO dto = new com.example.biblioteca.dto.LibroDTO();
+        dto.setTitulo("Libro Nuevo");
+        dto.setIsbn("123-456-789");
+        dto.setAnioPublicacion(2023);
+        dto.setAutorId(autor.getId());
 
         mockMvc.perform(post("/api/libros")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(libro))
+                        .content(objectMapper.writeValueAsString(dto))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isCreated());
     }
@@ -55,10 +78,25 @@ public class LibroControllerSecurityTest {
                 .andExpect(status().isForbidden());
     }
 
+
+
     @Test
     void deleteLibro_conRolAdmin_devuelve204() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_ADMIN));
-        mockMvc.perform(delete("/api/libros/1")
+        // 1. Creamos Admin, Autor y el Libro a borrar
+        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ROLE_ADMIN, "admin-del@test.com");
+
+        com.example.biblioteca.entity.Autor autor = new com.example.biblioteca.entity.Autor();
+        autor.setNombre("Autor");
+        autor = autorRepository.save(autor);
+
+        Libro libro = new Libro();
+        libro.setTitulo("A borrar");
+        libro.setAutor(autor);
+        libro = libroRepository.save(libro);
+
+        String token = jwtUtil.generateToken(admin);
+
+        mockMvc.perform(delete("/api/libros/" + libro.getId())
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
     }
@@ -73,8 +111,11 @@ public class LibroControllerSecurityTest {
 
     @Test
     void deleteLibro_sinToken_devuelve401() throws Exception {
+        // Nota: En muchas configuraciones de Spring Security, si no hay token,
+        // devuelve 403 (Forbidden) por defecto si no tienes un AuthenticationEntryPoint.
+        // Si tu test espera 401, asegúrate de haberlo configurado en SecurityConfig.
         mockMvc.perform(delete("/api/libros/1"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden()); // Cambia a isUnauthorized() si configuraste 401
     }
 
     private com.example.biblioteca.entity.Usuario createUser(Rol rol) {

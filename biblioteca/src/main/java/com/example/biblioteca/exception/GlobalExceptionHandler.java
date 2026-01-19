@@ -1,5 +1,6 @@
 package com.example.biblioteca.exception;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +15,13 @@ import java.util.Map;
 // Este código interceptará los errores de validación y los convertirá en una lista de mensajes amigables.
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, String>> handleAccessDenied(AccessDeniedException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "No tienes permisos para realizar esta acción");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
 
     // 1. Errores de @Valid (Campos nulos o vacíos)
     @ExceptionHandler(MethodArgumentNotValidException.class)

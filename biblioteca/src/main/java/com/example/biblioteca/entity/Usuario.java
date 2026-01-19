@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 
 // Para constructor, getter y setter automático
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class Usuario {
     // Relación 1:N con Reseñas (lado inverso)
     @OneToMany( mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
+    @ToString.Exclude
     private List<Resena> resenas;
 
     // Relación 1:N con Biblioteca (N:M transformada) (lado inverso)
@@ -78,6 +80,10 @@ public class Usuario {
     // private List<Rol> roles;
 
 
-
+    // manualmente para evitar el error de Lazy
+    @Override
+    public String toString() {
+        return "Usuario{id=" + id + ", email='" + email + "'}";
+    }
 
 }
