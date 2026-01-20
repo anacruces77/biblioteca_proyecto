@@ -4,7 +4,7 @@ import com.example.biblioteca.entity.EstadoLibro;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-// De entrada
+// DTO de Entrada: Lo que el cliente envía para registrar un libro en su biblioteca
 public class BibliotecaDTO {
 
     @NotNull(message = "El estado del libro es obligatorio")

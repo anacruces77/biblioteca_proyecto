@@ -6,21 +6,21 @@ import lombok.Data;
 
 import java.util.List;
 
-@Entity
-@Data
-@Table(name = "autores")
+@Entity // Define que esta clase se mapeará como una tabla en la base de datos
+@Data   // Genera automáticamente Getters, Setters, toString y equals mediante Lombok
+@Table(name = "autores") // Especifica el nombre real de la tabla en SQL
 public class Autor {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id // Marca este campo como la clave primaria (Primary Key)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // El ID se genera automáticamente (autoincremental)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100) // Campo obligatorio y con límite de caracteres
     private String nombre;
 
-    // Relación 1:N con Libro (lado inverso)
+    // Relación 1:N (Un autor tiene muchos libros). 'mappedBy' indica que la relación se gestiona en la clase Libro
     @OneToMany( mappedBy = "autor", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonIgnore // Evita que al pedir un autor se carguen infinitamente sus libros en el JSON
     private List<Libro> libros;
 
 }

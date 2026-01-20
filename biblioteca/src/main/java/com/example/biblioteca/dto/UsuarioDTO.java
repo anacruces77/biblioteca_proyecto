@@ -18,7 +18,7 @@ public class UsuarioDTO {
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
 
-    @Valid
+    @Valid // Valida automáticamente los campos internos del PerfilDTO
     private PerfilDTO perfil;
 
     // getters y setters

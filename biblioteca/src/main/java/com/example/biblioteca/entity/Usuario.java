@@ -52,17 +52,19 @@ public class Usuario {
 
 
 
-    // Relación 1:1 con Perfil (lado inverso)
+    // Relación 1:1 con Perfil (lado inverso) el usuario es quien "manda" en la relación con perfil
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Perfil perfil;
 
+    // Un usuario tiene su lista personal de reseñas
     // Relación 1:N con Reseñas (lado inverso)
     @OneToMany( mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     @ToString.Exclude
     private List<Resena> resenas;
 
+    // Un usuario tiene su propia colección de libros guardados
     // Relación 1:N con Biblioteca (N:M transformada) (lado inverso)
     @OneToMany( mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
@@ -80,6 +82,8 @@ public class Usuario {
     // private List<Rol> roles;
 
 
+
+    // Personalización manual del toString para evitar bucles infinitos con relaciones Lazy
     // manualmente para evitar el error de Lazy
     @Override
     public String toString() {

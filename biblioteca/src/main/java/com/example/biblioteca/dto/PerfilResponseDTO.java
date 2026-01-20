@@ -2,6 +2,7 @@ package com.example.biblioteca.dto;
 
 
 // Me sirve para el test
+// Usado para mostrar los datos del perfil sin exponer IDs internos de usuario si no es necesario
 public class PerfilResponseDTO {
 
     private Long id;

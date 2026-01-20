@@ -8,7 +8,7 @@ public class LibroDTO {
     private String titulo;
 
     @NotBlank(message = "El ISBN es obligatorio")
-    @Pattern(
+    @Pattern( // Valida que el ISBN solo tenga números y guiones, con longitud específica
             regexp = "^[0-9\\-]{10,17}$",
             message = "El ISBN tiene un formato inválido"
     )
@@ -20,7 +20,7 @@ public class LibroDTO {
     private Integer anioPublicacion;
 
     @NotNull(message = "El autor es obligatorio")
-    private Long autorId;
+    private Long autorId; // Usamos solo el ID para simplificar la creación del libro
 
 
     // Getters y setters

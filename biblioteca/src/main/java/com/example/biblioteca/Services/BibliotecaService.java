@@ -22,7 +22,7 @@ public class BibliotecaService {
     private final UsuarioRepository usuarioRepository;
     private final LibroRepository libroRepository;
 
-    // Inyectamos el repositorio de Reseña
+    // Requiere 3 repositorios para poder validar que usuario y libro existen antes de unirlos
     public BibliotecaService(BibliotecaRepository bibliotecaRepository,
                              UsuarioRepository usuarioRepository,
                              LibroRepository libroRepository) {
@@ -46,13 +46,14 @@ public class BibliotecaService {
         return bibliotecaRepository.findById(id);
     }
 
-
+    // Obtiene la colección personal de libros de un usuario específico
     // Listar bibliotecas por usuario
     public List<Biblioteca> getBibliotecasByUsuario(Long usuarioId) {
         return bibliotecaRepository.findByUsuarioId(usuarioId);
     }
 
 
+    // Busca qué usuarios tienen un libro concreto en sus lista
     // Listar bibliotecas por libro
     public List<Biblioteca> getBibliotecasByLibro(Long libroId) {
         return bibliotecaRepository.findByLibroId(libroId);
@@ -65,9 +66,10 @@ public class BibliotecaService {
         bibliotecaRepository.deleteById(id);
     }
 
-
+    // Convierte el DTO de entrada en Entidad, buscando las relaciones en la BD
     public Biblioteca saveFromDTO(BibliotecaDTO dto) {
 
+        // Si el usuario o libro no existen, lanza una excepción inmediatamente
         Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -83,6 +85,7 @@ public class BibliotecaService {
     }
 
 
+    // Transforma la Entidad a un DTO de respuesta para ocultar datos innecesarios al cliente
     public BibliotecaResponseDTO toResponseDTO(Biblioteca b) {
         BibliotecaResponseDTO dto = new BibliotecaResponseDTO();
         dto.setId(b.getId());

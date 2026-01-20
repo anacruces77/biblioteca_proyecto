@@ -10,6 +10,7 @@ import java.util.Optional;
 // Long --> tipo de dato que tiene la clave primaria (ID) de ese usuario
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
+    // Metodo vital para el Login: busca al usuario por su correo único
     // Consulta personalizada: Buscar usuario por email
     Optional<Usuario> findByEmail(String email);
 

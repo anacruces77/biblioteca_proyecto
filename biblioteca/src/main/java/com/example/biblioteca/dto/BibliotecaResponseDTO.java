@@ -1,6 +1,6 @@
 package com.example.biblioteca.dto;
 
-// De salida
+// DTO de Salida: Lo que la API devuelve (incluye el ID generado)
 public class BibliotecaResponseDTO {
 
     private Long id;
