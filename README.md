@@ -76,6 +76,6 @@ El sistema utiliza ****BCrypt**** para el cifrado de contraseñas20.
     ./mvnw spring-boot:run  
     
 
-### 📝 Notas del Desarrollador
+###  Notas del Desarrollador
 
 Este proyecto incluye un `GlobalExceptionHandler` que captura errores de validación (como ISBNs inválidos o campos vacíos) y devuelve mensajes claros al cliente. También cuenta con pruebas unitarias para los servicios principales utilizando ****Mockito**** y ****JUnit****.
