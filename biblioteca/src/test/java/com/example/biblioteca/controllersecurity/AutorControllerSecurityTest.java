@@ -40,7 +40,7 @@ public class AutorControllerSecurityTest {
 
     @Test
     void postAutor_conRolAdmin_devuelve201() throws Exception {
-        Usuario admin = saveUserInDB(Rol.ROLE_ADMIN, "admin_post@test.com");
+        Usuario admin = saveUserInDB(Rol.ADMIN, "admin_post@test.com");
         String token = jwtUtil.generateToken(admin);
 
         Autor nuevo = new Autor();
@@ -55,7 +55,7 @@ public class AutorControllerSecurityTest {
 
     @Test
     void postAutor_conRolUser_devuelve403() throws Exception {
-        Usuario user = saveUserInDB(Rol.ROLE_USER, "user_post@test.com");
+        Usuario user = saveUserInDB(Rol.USER, "user_post@test.com");
         String token = jwtUtil.generateToken(user);
 
         Autor nuevo = new Autor();
@@ -71,7 +71,7 @@ public class AutorControllerSecurityTest {
     @Test
     void deleteAutor_conRolAdmin_devuelve204() throws Exception {
         // Usamos saveUserInDB
-        Usuario admin = saveUserInDB(Rol.ROLE_ADMIN, "admin_del@test.com");
+        Usuario admin = saveUserInDB(Rol.ADMIN, "admin_del@test.com");
         String token = jwtUtil.generateToken(admin);
 
         mockMvc.perform(delete("/api/autores/1")
@@ -82,7 +82,7 @@ public class AutorControllerSecurityTest {
     @Test
     void deleteAutor_conRolUser_devuelve403() throws Exception {
         // CUsamos saveUserInDB
-        Usuario user = saveUserInDB(Rol.ROLE_USER, "user_del@test.com");
+        Usuario user = saveUserInDB(Rol.USER, "user_del@test.com");
         String token = jwtUtil.generateToken(user);
 
         mockMvc.perform(delete("/api/autores/1")

@@ -32,14 +32,16 @@ public class JwtRequestFilter extends OncePerRequestFilter{
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        // Busca el encabezado "Authorization" en la petición HTTP
         final String authHeader = request.getHeader("Authorization");
 
         String username = null;
         String jwt = null;
 
-        // 1. Extraer el token del encabezado
+        // 1. Extraer el token si existe y empieza por "Bearer "
+        // Extraer el token del encabezado
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
+            jwt = authHeader.substring(7); // Quita la palabra "Bearer " para quedarse solo con el código
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (Exception e) {
@@ -47,20 +49,23 @@ public class JwtRequestFilter extends OncePerRequestFilter{
             }
         }
 
-        // 2. Validar el usuario y establecer la seguridad
+        // 2. Validar el usuario y establecer la seguridad. Si hay usuario y no está ya autenticado en esta sesión
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             Usuario usuario = usuarioService.getUsuarioByEmail(username).orElse(null);
 
+            // Validamos que el token sea correcto para ese usuario
             if (usuario != null && jwtUtil.validateToken(jwt, usuario.getEmail())) {
 
                 // --- BLOQUE CLAVE: ASIGNACIÓN DE ROLES ---
                 // Extraemos el rol del JWT (ej: "ROLE_ADMIN")
+                // Extraemos el rol del token para dar permisos
                 String roleName = jwtUtil.extractRole(jwt);
 
                 // Creamos la autoridad que Spring Security puede entender
                 org.springframework.security.core.authority.SimpleGrantedAuthority authority =
                         new org.springframework.security.core.authority.SimpleGrantedAuthority(roleName);
 
+                // Creamos el objeto de autenticación con el usuario y su lista de roles
                 // Creamos el token de autenticación PASANDO LA LISTA DE AUTORIDADES (en lugar de null)
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
@@ -72,12 +77,14 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+                // Informamos a Spring de que este usuario es válido para esta petición
                 // Seteamos la autenticación en el contexto global de la aplicación
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
         // 3. Continuar con la cadena de filtros
+        // Deja que la petición siga su camino hacia el Controller
         filterChain.doFilter(request, response);
     }
 

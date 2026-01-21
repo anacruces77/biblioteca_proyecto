@@ -31,7 +31,7 @@ public class BibliotecaControllerSecurityTest {
 
     @Test
     void postBiblioteca_conRolAdmin_devuelve201() throws Exception {
-        com.example.biblioteca.entity.Usuario admin = saveUserInDB(Rol.ROLE_ADMIN, "admin_post@test.com");
+        com.example.biblioteca.entity.Usuario admin = saveUserInDB(Rol.ADMIN, "admin_post@test.com");
         String token = jwtUtil.generateToken(admin);
 
         com.example.biblioteca.dto.BibliotecaDTO dto = new com.example.biblioteca.dto.BibliotecaDTO();
@@ -50,7 +50,7 @@ public class BibliotecaControllerSecurityTest {
     @Test
     void postBiblioteca_conRolUser_devuelve403() throws Exception {
         // 1. Guardamos el usuario con rol USER
-        com.example.biblioteca.entity.Usuario user = saveUserInDB(Rol.ROLE_USER, "user_post@test.com");
+        com.example.biblioteca.entity.Usuario user = saveUserInDB(Rol.USER, "user_post@test.com");
         String token = jwtUtil.generateToken(user);
 
         // 2. Creamos el DTO con DATOS VÁLIDOS (incluyendo el Enum)
@@ -72,7 +72,7 @@ public class BibliotecaControllerSecurityTest {
 
     @Test
     void deleteBiblioteca_conRolAdmin_devuelve204() throws Exception {
-        com.example.biblioteca.entity.Usuario admin = saveUserInDB(Rol.ROLE_ADMIN, "admin_del@test.com");
+        com.example.biblioteca.entity.Usuario admin = saveUserInDB(Rol.ADMIN, "admin_del@test.com");
         String token = jwtUtil.generateToken(admin);
 
         mockMvc.perform(delete("/api/bibliotecas/1")
@@ -82,7 +82,7 @@ public class BibliotecaControllerSecurityTest {
 
     @Test
     void deleteBiblioteca_conRolUser_devuelve403() throws Exception {
-        com.example.biblioteca.entity.Usuario user = saveUserInDB(Rol.ROLE_USER, "user_del@test.com");
+        com.example.biblioteca.entity.Usuario user = saveUserInDB(Rol.USER, "user_del@test.com");
         String token = jwtUtil.generateToken(user);
 
         mockMvc.perform(delete("/api/bibliotecas/1")

@@ -71,7 +71,7 @@ public class UsuarioService {
         usuario.setNombre(dto.getNombre());
         usuario.setEmail(dto.getEmail());
         usuario.setPassword(dto.getPassword()); // En un proyecto real aquí se cifraría la contraseña
-        usuario.setRol(Rol.ROLE_USER);
+        usuario.setRol(Rol.USER);
 
         // Suponiendo que usas un repositorio llamado usuarioRepository
         return usuarioRepository.save(usuario);

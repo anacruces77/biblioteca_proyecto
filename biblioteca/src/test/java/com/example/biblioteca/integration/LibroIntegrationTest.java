@@ -22,9 +22,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@AutoConfigureMockMvc(addFilters = false)
-@Transactional
-@ActiveProfiles("test")
+@AutoConfigureMockMvc(addFilters = false) // desactiva los filtros de Spring Security, útil si quieres probar endpoints sin tener que autenticar.
+@Transactional // Cuando el test termina, la transacción se revierte automáticamente, dejando la base limpia
+@ActiveProfiles("test") // Indica que este test debe usar el perfil test, es decir, las propiedades de application-test.properties.
 public class LibroIntegrationTest {
 
     @Autowired

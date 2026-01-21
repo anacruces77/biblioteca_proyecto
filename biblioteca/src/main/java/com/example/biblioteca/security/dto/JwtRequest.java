@@ -5,8 +5,10 @@ public class JwtRequest {
     private String email;
     private String password;
 
+    // Constructor vacío necesario para que Jackson pueda deserializar el JSON
     public JwtRequest() {}
 
+    // Constructor para inicializar con datos
     public JwtRequest(String email, String password) {
         this.email = email;
         this.password = password;

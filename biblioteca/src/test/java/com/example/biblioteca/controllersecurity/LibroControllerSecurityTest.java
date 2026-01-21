@@ -43,7 +43,7 @@ public class LibroControllerSecurityTest {
     @Test
     void postLibro_conRolAdmin_devuelve201() throws Exception {
         // 1. Creamos Admin y Autor en BD
-        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ROLE_ADMIN, "admin-libros@test.com");
+        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ADMIN, "admin-libros@test.com");
         com.example.biblioteca.entity.Autor autor = new com.example.biblioteca.entity.Autor();
         autor.setNombre("Autor Test");
         autor = autorRepository.save(autor);
@@ -66,7 +66,7 @@ public class LibroControllerSecurityTest {
 
     @Test
     void postLibro_conRolUser_devuelve403() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_USER));
+        String token = jwtUtil.generateToken(createUser(Rol.USER));
 
         Libro libro = new Libro();
         libro.setTitulo("LibroTest");
@@ -83,7 +83,7 @@ public class LibroControllerSecurityTest {
     @Test
     void deleteLibro_conRolAdmin_devuelve204() throws Exception {
         // 1. Creamos Admin, Autor y el Libro a borrar
-        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ROLE_ADMIN, "admin-del@test.com");
+        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ADMIN, "admin-del@test.com");
 
         com.example.biblioteca.entity.Autor autor = new com.example.biblioteca.entity.Autor();
         autor.setNombre("Autor");
@@ -103,7 +103,7 @@ public class LibroControllerSecurityTest {
 
     @Test
     void deleteLibro_conRolUser_devuelve403() throws Exception {
-        String token = jwtUtil.generateToken(createUser(Rol.ROLE_USER));
+        String token = jwtUtil.generateToken(createUser(Rol.USER));
         mockMvc.perform(delete("/api/libros/1")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden());

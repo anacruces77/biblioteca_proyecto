@@ -38,7 +38,7 @@ public class ResenaControllerSecurityTest {
 
     @Test
     void postResena_conRolAdmin_devuelve201() throws Exception {
-        com.example.biblioteca.entity.Usuario admin = saveUserInDB(Rol.ROLE_ADMIN, "admin@test.com");
+        com.example.biblioteca.entity.Usuario admin = saveUserInDB(Rol.ADMIN, "admin@test.com");
         String token = jwtUtil.generateToken(admin);
 
         com.example.biblioteca.dto.ResenaDTO dto = new com.example.biblioteca.dto.ResenaDTO();
@@ -56,7 +56,7 @@ public class ResenaControllerSecurityTest {
 
     @Test
     void deleteResena_conRolAdmin_devuelve204() throws Exception {
-        com.example.biblioteca.entity.Usuario admin = saveUserInDB(Rol.ROLE_ADMIN, "del_admin@test.com");
+        com.example.biblioteca.entity.Usuario admin = saveUserInDB(Rol.ADMIN, "del_admin@test.com");
         String token = jwtUtil.generateToken(admin);
 
         mockMvc.perform(delete("/api/resenas/1")
@@ -66,7 +66,7 @@ public class ResenaControllerSecurityTest {
 
     @Test
     void deleteResena_conRolUser_devuelve403() throws Exception {
-        com.example.biblioteca.entity.Usuario user = saveUserInDB(Rol.ROLE_USER, "user@test.com");
+        com.example.biblioteca.entity.Usuario user = saveUserInDB(Rol.USER, "user@test.com");
         String token = jwtUtil.generateToken(user);
 
         mockMvc.perform(delete("/api/resenas/1")

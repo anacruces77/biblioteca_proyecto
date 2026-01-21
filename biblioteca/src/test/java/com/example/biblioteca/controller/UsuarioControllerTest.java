@@ -55,7 +55,7 @@ public class UsuarioControllerTest {
         usuario.setId(1L);
         usuario.setNombre("Ana");
         usuario.setEmail("ana@mail.com");
-        usuario.setRol(Rol.ROLE_USER);
+        usuario.setRol(Rol.USER);
 
         when(usuarioService.getUsuarioById(1L)).thenReturn(Optional.of(usuario));
 

@@ -45,8 +45,8 @@ public class PerfilControllerSecurityTest {
     @Test
     void postPerfil_conRolAdmin_devuelve201() throws Exception {
         // 1. Guardar admin y el usuario al que pertenecerá el perfil
-        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ROLE_ADMIN, "admin-p@test.com");
-        com.example.biblioteca.entity.Usuario usuarioParaPerfil = saveUser(Rol.ROLE_USER, "user-p@test.com");
+        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ADMIN, "admin-p@test.com");
+        com.example.biblioteca.entity.Usuario usuarioParaPerfil = saveUser(Rol.USER, "user-p@test.com");
 
         String token = jwtUtil.generateToken(admin);
 
@@ -65,7 +65,7 @@ public class PerfilControllerSecurityTest {
     @Test
     void postPerfil_conRolUser_devuelve201() throws Exception {
         // El usuario existe en la BD
-        com.example.biblioteca.entity.Usuario user = saveUser(Rol.ROLE_USER, "user-crear@test.com");
+        com.example.biblioteca.entity.Usuario user = saveUser(Rol.USER, "user-crear@test.com");
         String token = jwtUtil.generateToken(user);
 
         com.example.biblioteca.dto.PerfilDTO dto = new com.example.biblioteca.dto.PerfilDTO();
@@ -81,8 +81,8 @@ public class PerfilControllerSecurityTest {
 
     @Test
     void deletePerfil_conRolAdmin_devuelve204() throws Exception {
-        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ROLE_ADMIN, "admin-del-p@test.com");
-        com.example.biblioteca.entity.Usuario u = saveUser(Rol.ROLE_USER, "u-del@test.com");
+        com.example.biblioteca.entity.Usuario admin = saveUser(Rol.ADMIN, "admin-del-p@test.com");
+        com.example.biblioteca.entity.Usuario u = saveUser(Rol.USER, "u-del@test.com");
 
         // Creamos un perfil real para borrarlo
         com.example.biblioteca.entity.Perfil p = new com.example.biblioteca.entity.Perfil();
@@ -100,7 +100,7 @@ public class PerfilControllerSecurityTest {
     @Test
     void deletePerfil_conRolUser_devuelve403() throws Exception {
         // Usuario autenticado pero sin rol ADMIN
-        com.example.biblioteca.entity.Usuario user = saveUser(Rol.ROLE_USER, "user-no-borrar@test.com");
+        com.example.biblioteca.entity.Usuario user = saveUser(Rol.USER, "user-no-borrar@test.com");
         String token = jwtUtil.generateToken(user);
 
         mockMvc.perform(delete("/api/perfiles/1")

@@ -39,7 +39,7 @@ public class UsuarioControllerSecurityTest {
         admin.setNombre("Admin Test");
         admin.setEmail("admin@test.com");
         admin.setPassword("123456");
-        admin.setRol(Rol.ROLE_ADMIN);
+        admin.setRol(Rol.ADMIN);
         usuarioRepository.save(admin); // <--- IMPORTANTE
 
         String token = jwtUtil.generateToken(admin);
@@ -53,7 +53,7 @@ public class UsuarioControllerSecurityTest {
     void deleteUsuario_conRolUser_devuelve403() throws Exception {
         Usuario user = new Usuario();
         user.setId(2L);
-        user.setRol(Rol.ROLE_USER);
+        user.setRol(Rol.USER);
 
         String token = jwtUtil.generateToken(user);
 
@@ -75,7 +75,7 @@ public class UsuarioControllerSecurityTest {
         admin.setNombre("Admin");
         admin.setEmail("admin-post@mail.com");
         admin.setPassword("123456");
-        admin.setRol(Rol.ROLE_ADMIN);
+        admin.setRol(Rol.ADMIN);
         usuarioRepository.save(admin);
 
         String token = jwtUtil.generateToken(admin);
@@ -96,7 +96,7 @@ public class UsuarioControllerSecurityTest {
     @Test
     void postUsuario_conRolUser_devuelve403() throws Exception {
         Usuario user = new Usuario();
-        user.setRol(Rol.ROLE_USER);
+        user.setRol(Rol.USER);
         String token = jwtUtil.generateToken(user);
 
         Usuario nuevo = new Usuario();
@@ -118,14 +118,14 @@ public class UsuarioControllerSecurityTest {
         admin.setEmail("admin-put@mail.com");
         admin.setNombre("Admin");
         admin.setPassword("123456");
-        admin.setRol(Rol.ROLE_ADMIN);
+        admin.setRol(Rol.ADMIN);
         usuarioRepository.save(admin);
 
         Usuario aEditar = new Usuario();
         aEditar.setNombre("Original");
         aEditar.setEmail("original@mail.com");
         aEditar.setPassword("123456");
-        aEditar.setRol(Rol.ROLE_USER);
+        aEditar.setRol(Rol.USER);
         usuarioRepository.save(aEditar);
 
         String token = jwtUtil.generateToken(admin);
@@ -143,7 +143,7 @@ public class UsuarioControllerSecurityTest {
     @Test
     void putUsuario_conRolUser_devuelve403() throws Exception {
         Usuario user = new Usuario();
-        user.setRol(Rol.ROLE_USER);
+        user.setRol(Rol.USER);
         String token = jwtUtil.generateToken(user);
 
         Usuario edit = new Usuario();

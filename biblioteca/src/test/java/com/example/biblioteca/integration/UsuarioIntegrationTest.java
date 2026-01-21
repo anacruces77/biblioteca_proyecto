@@ -34,7 +34,7 @@ public class UsuarioIntegrationTest {
         usuario.setNombre("TestUser");
         usuario.setEmail("testuser@mail.com");
         usuario.setPassword("123456");
-        usuario.setRol(Rol.ROLE_USER);
+        usuario.setRol(Rol.USER);
 
         mockMvc.perform(post("/api/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)

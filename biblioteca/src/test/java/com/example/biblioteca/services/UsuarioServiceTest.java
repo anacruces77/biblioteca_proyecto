@@ -32,14 +32,14 @@ class UsuarioServiceTest {
         usuario.setNombre("Ana");
         usuario.setEmail("ana@mail.com");
         usuario.setPassword("123456");
-        usuario.setRol(Rol.ROLE_USER);
+        usuario.setRol(Rol.USER);
 
         Usuario usuarioGuardado = new Usuario();
         usuarioGuardado.setId(1L);  // Simula haber pasado por la base de datos
         usuarioGuardado.setNombre("Ana");
         usuarioGuardado.setEmail("ana@mail.com");
         usuarioGuardado.setPassword("123456");
-        usuario.setRol(Rol.ROLE_USER);
+        usuario.setRol(Rol.USER);
 
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioGuardado);
 

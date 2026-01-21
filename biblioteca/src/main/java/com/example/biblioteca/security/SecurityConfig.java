@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity // permite usar @PreAuthorize en los endpoints
+@EnableMethodSecurity // permite usar @PreAuthorize en los endpoints // Permite usar @PreAuthorize("hasRole('ADMIN')") directamente en los métodos del Controller
 public class SecurityConfig {
 
 
@@ -29,9 +29,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // Desactivamos CSRF (común en APIs con tokens)
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Rutas públicas
+                        // 1. Rutas públicas (Login, Registro y Consola H2)
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
 
@@ -42,18 +42,20 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/usuarios/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
 
-                        // 3. Todo lo demás requiere estar logueado
+                        // 3. Todo lo demas requiere estar logueado
                         .anyRequest().authenticated()
                 )
-                // --- ESTO ES LO QUE DEBES AÑADIR ---
+
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
+                            // Si alguien intenta entrar a un sitio protegido sin token, recibe un 401
                             // Cuando no hay token o la autenticación falla, devolvemos 401
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: No autorizado");
                         })
                 )
-                // ----------------------------------
+                // Permite que la consola H2 se vea correctamente en el navegador
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+                // Añade nuestro filtro JWT antes del filtro estándar de usuario/contraseña
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -61,7 +63,7 @@ public class SecurityConfig {
 
 
 
-
+    // Define el algoritmo de hash para las contraseñas (BCrypt es el estándar actual)
     // Bean para encriptar contraseñas
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -70,7 +72,7 @@ public class SecurityConfig {
 
 
 
-
+    // Configuración necesaria para que Spring gestione el proceso de autenticación
     // Bean de AuthenticationManager necesario para login con JWT
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

@@ -56,7 +56,7 @@ public class UsuarioController {
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setEmail(usuarioDTO.getEmail());
         usuario.setPassword(usuarioDTO.getPassword());
-        usuario.setRol(Rol.ROLE_USER); //Rol por defecto
+        usuario.setRol(Rol.USER); //Rol por defecto
 
         if(usuarioDTO.getPerfil() != null){
             PerfilDTO perfilDTO = usuarioDTO.getPerfil();
