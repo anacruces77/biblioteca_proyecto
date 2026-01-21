@@ -5,7 +5,7 @@ Este proyecto es una API REST desarrollada con ****Java**** y ****Spring Boot***
 ##  Características Principales
 
 -   ****Autenticación y Autorización:**** Implementación de ****Spring Security**** y ****JWT**** (JSON Web Tokens).
--   ****Gestión de Roles:**** Diferenciación entre usuarios estándar (`USER`) y administradores (`ADMIN`) para el acceso a endpoints críticos666.
+-   ****Gestión de Roles:**** Diferenciación entre usuarios estándar (`USER`) y administradores (`ADMIN`) para el acceso a endpoints críticos.
 -   ****Gestión de Contenido:**** CRUD completo para Autores, Libros y Reseñas.
 -   ****Colección Personal:**** Cada usuario puede marcar libros en su biblioteca como `PENDIENTE`, `LEYENDO` o `LEIDO`.
 -   ****Validaciones:**** Uso de `jakarta.validation` para asegurar la integridad de los datos de entrada.
@@ -44,6 +44,17 @@ El sistema utiliza ****BCrypt**** para el cifrado de contraseñas20.
 | Eliminar Reseñas ajenas       | ❌              | ✅                     |
 | Gestionar Usuarios            | ❌              | ✅                     |
 
+
+##  Seguridad y Autenticación
+
+El sistema implementa **BCrypt** para el cifrado de credenciales.
+
+### → Flujo de Acceso
+1. El usuario se registra en `/api/auth/register`.
+2. Inicia sesión en `/api/auth/login` y recibe un **Token JWT**.
+3. El token debe incluirse en la cabecera de cada petición protegida:  
+   `Authorization: Bearer <TOKEN_JWT>`
+
 ##  Endpoints Principales (Resumen)
 
 ### Autenticación
@@ -61,6 +72,49 @@ El sistema utiliza ****BCrypt**** para el cifrado de contraseñas20.
 
 -   `GET /api/bibliotecas`: Ver mi colección de libros.
 -   `POST /api/bibliotecas`: Añadir libro a mi colección con estado.
+
+---
+
+## 🔌 Endpoints REST
+
+### → Autenticación
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| POST | `/api/auth/register` | Registro de nuevos usuarios |
+| POST | `/api/auth/login` | Login y obtención de token JWT |
+---
+
+### → Libros
+| Método | Endpoint | Rol | Descripción |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/libros` | Público | Listar todos los libros |
+| `POST` | `/api/libros` | **ADMIN** | Registrar un nuevo libro |
+
+---
+
+### → Autores
+| Método | Endpoint | Rol | Descripción |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/autores` | Público | Listar todos los autores |
+| `POST` | `/api/autores` | **ADMIN** | Registrar un nuevo autor |
+### → Biblioteca Personal (Lecturas)
+| Método | Endpoint | Rol | Descripción |
+| :--- | :--- | :--- | :--- |
+| GET | `/api/bibliotecas` | USER | Ver mi lista de libros y estados |
+| POST | `/api/bibliotecas` | USER | Añadir libro a mi colección |
+| PUT | `/api/bibliotecas/{id}` | USER | Cambiar estado (PENDIENTE, LEYENDO, LEIDO) |
+
+### → Reseñas
+| Método | Endpoint | Rol | Descripción |
+| :--- | :--- | :--- | :--- |
+| GET | `/api/resenas/libro/{libroId}` | Público | Ver reseñas de un libro |
+| POST | `/api/resenas` | USER | Publicar una nueva reseña |
+
+### → Usuarios (Administración)
+| Método | Endpoint | Rol | Descripción |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/usuarios` | **ADMIN** | Listar todos los usuarios registrados |
+---
 
 ##  Instalación y Uso
 
