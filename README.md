@@ -44,7 +44,7 @@ El sistema utiliza ****BCrypt**** para el cifrado de contraseñas20.
 | Eliminar Reseñas ajenas       | ❌              | ✅                     |
 | Gestionar Usuarios            | ❌              | ✅                     |
 
-## 🔌 Endpoints Principales (Resumen)
+##  Endpoints Principales (Resumen)
 
 ### Autenticación
 
