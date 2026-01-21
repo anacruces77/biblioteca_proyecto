@@ -1,4 +1,4 @@
-# 📚 Sistema de Gestión de Biblioteca (API REST)
+#  Sistema de Gestión de Biblioteca (API REST)
 
 Este proyecto es una API REST desarrollada con ****Java**** y ****Spring Boot**** para la gestión integral de una biblioteca personal o pública. Permite administrar autores, libros, perfiles de usuario, reseñas y una colección personal de libros (biblioteca del usuario) con un sistema de seguridad robusto.
 
