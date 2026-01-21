@@ -6,10 +6,10 @@ Este proyecto es una API REST desarrollada con ****Java**** y ****Spring Boot***
 
 -   ****Autenticación y Autorización:**** Implementación de ****Spring Security**** y ****JWT**** (JSON Web Tokens)5555.
 -   ****Gestión de Roles:**** Diferenciación entre usuarios estándar (`USER`) y administradores (`ADMIN`) para el acceso a endpoints críticos666.
--   ****Gestión de Contenido:**** CRUD completo para Autores, Libros y Reseñas7777777.
--   ****Colección Personal:**** Cada usuario puede marcar libros en su biblioteca como `PENDIENTE`, `LEYENDO` o `LEIDO`8.
--   ****Validaciones:**** Uso de `jakarta.validation` para asegurar la integridad de los datos de entrada999999.
--   ****Tratamiento de Errores:**** Manejador global de excepciones para respuestas HTTP consistentes10.
+-   ****Gestión de Contenido:**** CRUD completo para Autores, Libros y Reseñas.
+-   ****Colección Personal:**** Cada usuario puede marcar libros en su biblioteca como `PENDIENTE`, `LEYENDO` o `LEIDO`.
+-   ****Validaciones:**** Uso de `jakarta.validation` para asegurar la integridad de los datos de entrada.
+-   ****Tratamiento de Errores:**** Manejador global de excepciones para respuestas HTTP consistentes.
 
 ## 🛠️ Tecnologías Utilizadas
 
