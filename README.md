@@ -30,6 +30,22 @@ El proyecto sigue una arquitectura por capas:
 -   `controller`: Endpoints de la API REST.
 -   `security`: Configuración de filtros, utilidad JWT y cifrado de contraseñas.
 
+  
+## Modelo de Datos
+
+- **Usuario** 1:1 Perfil  
+- **Usuario** 1:N Reseña  
+- **Usuario** N:M Libro (a través de Biblioteca)  
+- **Usuario** N:M Rol  
+- **Perfil** 1:1 Usuario  
+- **Autor** 1:N Libro  
+- **Libro** 1:N Reseña  
+- **Libro** N:M Usuario (a través de Biblioteca)  
+- **Biblioteca** N:M Usuario + Libro  
+- **Reseña** → Usuario + Libro  
+
+Las relaciones están gestionadas mediante **JPA** con claves foráneas y cascadas.
+
 ##  Seguridad y Roles
 
 El sistema utiliza ****BCrypt**** para el cifrado de contraseñas20.
@@ -127,6 +143,15 @@ El sistema implementa **BCrypt** para el cifrado de credenciales.
     
     ./mvnw spring-boot:run  
     
+## Testing
+
+El proyecto está preparado para:
+
+- Tests unitarios
+- Tests de integración
+- Tests de seguridad con `spring-security-test`
+
+##
 
 ###  Notas del Desarrollador
 
