@@ -82,7 +82,6 @@ El sistema implementa **BCrypt** para el cifrado de credenciales.
 | :--- | :--- | :--- |
 | POST | `/api/auth/register` | Registro de nuevos usuarios |
 | POST | `/api/auth/login` | Login y obtención de token JWT |
----
 
 ### → Libros
 | Método | Endpoint | Rol | Descripción |
@@ -90,7 +89,6 @@ El sistema implementa **BCrypt** para el cifrado de credenciales.
 | `GET` | `/api/libros` | Público | Listar todos los libros |
 | `POST` | `/api/libros` | **ADMIN** | Registrar un nuevo libro |
 
----
 
 ### → Autores
 | Método | Endpoint | Rol | Descripción |
